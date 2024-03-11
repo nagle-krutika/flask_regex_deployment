@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Validator</title>
+</head>
+<body>
+    <h1>Regex Tester</h1>
+    <form action="/test_regex" method="post">
+        <label for="regex">Regular Expression:</label><br>
+        <input type="text" id="regex" name="regex" required><br>
+        <label for="test_text">Test Text:</label><br>
+        <textarea id="test_text" name="test_text" rows="4" cols="50" required></textarea><br>
+        <input type="submit" value="Test">
+    </form>
+
+    <h1>Email Validator</h1>
+    <form id="emailForm">
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br>
+        <button type="button" onclick="validateEmail()">Validate Email</button>
+        <p id="validationResult"></p>
+    </form>
+
+    <script>
+        function validateEmail() {
+            var email = document.getElementById('email').value;
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/validate_email', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.valid) {
+                            document.getElementById('validationResult').innerText = "Valid email address";
+                        } else {
+                            document.getElementById('validationResult').innerText = "Invalid email address";
+                        }
+                    } else {
+                        console.error('Error:', xhr.status);
+                    }
+                }
+            };
+            xhr.send('email=' + encodeURIComponent(email));
+        }
+    </script>
+</body>
+</html>
